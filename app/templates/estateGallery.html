@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+
+{% block title %}Library of Maps - Estate Gallery{% endblock %}
+
+{% block content %}
+  <h2 class="mb-4">Estates</h2>
+  <div class="row row-cols-1 row-cols-md-3 g-4">
+    {% for estate in estates %}
+    <div class="col">
+      <div class="card h-100 shadow-sm">
+        <div class="card-body d-flex flex-column">
+          <h5 class="card-title">{{ estate.name }}
+            <span class="badge bg-secondary ms-2">{{ estate.field_count }} Fields</span>
+          </h5>
+          <p class="card-text">Region: {{ estate.region }}</p>
+          <a href="{{ url_for('main.fields', estate_id=estate.id) }}" class="btn btn-primary mt-auto">View Fields</a>
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+{% endblock %}

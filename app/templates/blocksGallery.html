@@ -1,0 +1,92 @@
+{% extends "base.html" %}
+
+{% block title %}Blocks Gallery - Library of Maps{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+
+    <!-- Header with Back Button -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div class="d-flex align-items-center">
+            <a href="{{ url_for('main.fields', estate_id=back_estate_id) }}" class="btn btn-outline-secondary btn-sm me-3">
+                <i class="bi bi-arrow-left"></i> Back to fields
+            </a>
+            <h3 class="mb-0">Blocks Gallery</h3>
+        </div>
+        
+    </div>
+
+    <!-- Table -->
+    <div class="table-responsive">
+        <table class="table table-bordered align-middle text-center shadow-sm">
+            <thead class="table-light">
+                <tr>
+                    <th>Block</th>
+                    <th>Orthomap</th>
+                    <th>Field Boundary</th>
+                    <th>TVWS Location</th>
+                    <th>Bin Location</th>
+                    <th>Waypoints</th>
+                    <th>Info</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for block in blocks %}
+                <tr>
+                    <td><strong>{{ block.name }}</strong></td>
+
+                    {% for filetype in ['Orthomap', 'Field Boundary', 'TVWS Location', 'Bin Location', 'Waypoints'] %}
+                    <td>
+                        <button class="btn btn-sm btn-outline-success mb-1" title="Upload">
+                            <i class="bi bi-upload"></i>
+                        </button>
+                        <button class="btn btn-sm btn-outline-primary mb-1" title="Download">
+                            <i class="bi bi-download"></i>
+                        </button>
+                        <select class="form-select form-select-sm">
+                            {% for ver in block.versions[filetype].all_versions %}
+                            <option {% if ver == block.versions[filetype].current %}selected{% endif %}>
+                                v{{ ver }}
+                            </option>
+                            {% endfor %}
+                        </select>
+                    </td>
+                    {% endfor %}
+
+                    <!-- Info Button -->
+                    <td>
+                        <button class="btn btn-sm btn-outline-info" data-bs-toggle="modal" data-bs-target="#infoModal{{ loop.index }}">
+                            <i class="bi bi-info-circle"></i>
+                        </button>
+
+                        <!-- Modal -->
+                        <div class="modal fade" id="infoModal{{ loop.index }}" tabindex="-1" aria-labelledby="infoModalLabel{{ loop.index }}" aria-hidden="true">
+                            <div class="modal-dialog modal-dialog-scrollable">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="infoModalLabel{{ loop.index }}">
+                                            Block Info - {{ block.name }}
+                                        </h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body text-start">
+                                        <p><strong>Created By:</strong> {{ block.info.created_by }}</p>
+                                        <p><strong>Hectarage:</strong> {{ block.info.hectarage }} Ha</p>
+                                        <p><strong>Planting Density:</strong> {{ block.info.planting_density }} palms/ha</p>
+                                        <p><strong>Fertilizer Type:</strong> {{ block.info.fertilizer_type }}</p>
+                                        <p><strong>Dosage:</strong> {{ block.info.dosage }} kg/palm</p>
+                                        <p><strong>Palm Count:</strong> {{ block.info.palm_count }}</p>
+                                        <p><strong>Last Updated:</strong> {{ block.info.last_updated }}</p>
+                                        <p><strong>Note:</strong> {{ block.info.note }}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}
